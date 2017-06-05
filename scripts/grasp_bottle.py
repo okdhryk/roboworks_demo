@@ -11,7 +11,7 @@ _MOVE_TIMEOUT=60.0
 # 把持トルク[Nm]
 _GRASP_TORQUE=-0.01
 # ボトルのtf名
-_BOTTLE_TF='ar_marker/503'
+_BOTTLE_TF='ar_marker/1'
 # グリッパのtf名
 _HAND_TF='hand_palm_link'
 
@@ -32,13 +32,13 @@ hand_up = geometry.pose(x=0.1)
 hand_back = geometry.pose(z=-0.5)
 
 # ソファの場所
-sofa_pos = (1.2, 0.4, 1.57)
+sofa_pos = (0, 0.0, 0)
 
 if __name__=='__main__':
 
     # まずは一言
-    rospy.sleep(5.0)
-    tts.say('こんにちはHSRだよ。ソファ脇のペットボトルを掴もうと思います。')
+    rospy.sleep(10.0)
+    tts.say('こんにちはHSRだよ。ペットボトルを掴もうと思います。')
     rospy.sleep(5.0)
 
     try:
