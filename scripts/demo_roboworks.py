@@ -10,7 +10,7 @@ import scipy
 import cv2
 import os
 import csv
-import paths
+#import paths
 import tf
 import re
 import hsrb_interface
@@ -52,15 +52,15 @@ hand_back = geometry.pose(z=-0.5)
 
 ### 場所の座標
 # ROSは右手座標系
-standby_pos = (-1.5, 0.0, 0) # 待機場所の座標
-zero_pos = (0, 0.0, 3.14) # 原点
-init_greeting_pos = (0, 0.0, 0) # 見学者に挨拶する場所
-refrigerator_pos = (0, 0.0, 0) # 冷蔵庫
-bookshelf_pos = (0, 0.0, 0) # 本棚の場所
-shelf_front_pos = (0, 0.0, 0) # 食器棚の見える場所
-shelf_pos = (0, 0.0, 0) # 食器棚の場所
-paper_pos = (0, 0.0, 0) # 紙が落ちている場所
-greeting_pos = (0, 0.0, 0) # 見学者に挨拶する場所
+standby_pos = (-1.94, 0.0, 0) # 待機場所の座標
+zero_pos = (0, 0.0, 0.0) # 原点
+init_greeting_pos = (0.5, 0.0, 1.57) # 見学者に挨拶する場所
+refrigerator_pos = (-0.4, -1.1, -1.57) # 冷蔵庫
+bookshelf_pos = (4.21, -1.35, -1.57) # 本棚の場所
+shelf_front_pos = (1.14, 1.65, 3.14) # 食器棚の見える場所
+shelf_pos = (-0.15, 0.92, 3.14) # 食器棚の場所
+paper_pos = (2.8, 1.4, 0) # 紙が落ちている場所
+greeting_pos = (1.14, 1.65, 1.57) # 見学者に挨拶する場所
 
 
 def go_and_say(pos=(0,0,0), contents=''):
@@ -87,7 +87,7 @@ if __name__=='__main__':
         rospy.logerr('Fail move_to_neutral')
 
     # 自己位置（ドア前）を地図上の位置に一致させる
-    TTS.say(u"自己位置を地図上の位置に一致させます。")
+    tts.say(u"自己位置を地図上の位置に一致させます。")
     rospy.sleep(2)
 
 #    init_x = rospy.get_param("~init_x", 0.0)
@@ -97,11 +97,11 @@ if __name__=='__main__':
     init_y = standby_pos[1]
     init_angle = standby_pos[2]
 
-    TTS.say(u"自己位置のエックス座標は"+str(init_x)+u"ですね")
+    tts.say(u"自己位置のエックス座標は"+str(init_x)+u"ですね")
     rospy.sleep(3)
-    TTS.say(u"自己位置のワイ座標は"+str(init_y)+u"ですね")
+    tts.say(u"自己位置のワイ座標は"+str(init_y)+u"ですね")
     rospy.sleep(3)
-    TTS.say(u"自己位置の姿勢は"+str(init_angle)+u"ですね")
+    tts.say(u"自己位置の姿勢は"+str(init_angle)+u"ですね")
     rospy.sleep(3)
 
     point = Point(init_x, init_y, 0.0) #x座標とy座標、z座標は無視される
@@ -122,27 +122,27 @@ if __name__=='__main__':
     p.header.stamp = rospy.Time.now()
     p.header.frame_id="map"
     pub.publish(p);
-    rospy.sleep(5)
+    rospy.sleep(15)
 
 
 
     # ドアの前でスタンバイ
-    TTS.say(u'イレイサー、準備完了。')
+    tts.say(u'イレイサー、準備完了。')
     rospy.sleep(2)
 
     # 腕を押したらタスクを開始する
     while True:
-        wrench = ROBOT.get('wrist_wrench',ItemTypes.FORCE_TORQUE).wrench
+        wrench = robot.get('wrist_wrench',ItemTypes.FORCE_TORQUE).wrench
         if wrench[0][0] > 20.0:
             break
         pass
-    TTS.say(u'ロボット工房の案内プログラムを起動しました。ドアを開けてください。')
+    tts.say(u'ロボット工房の案内プログラムを起動しました。ドアを開けてください。')
     rospy.sleep(4)
 
     # ドアが開いたら部屋に入る
 
 
-    TTS.say(u'ドアがあきました。部屋に入ります。')
+    tts.say(u'ドアがあきました。部屋に入ります。')
     rospy.sleep(2)
 
 
@@ -157,10 +157,10 @@ if __name__=='__main__':
 
     #############
     #############
-    tts.say(u'ロボット工房の案内を中止します。')
-    rospy.sleep(3)
-    base.go(standby_pos[0], standby_pos[1], standby_pos[2], 180.0)
-    sys.exit()
+#    tts.say(u'ロボット工房の案内を中止します。')
+#    rospy.sleep(3)
+#    base.go(standby_pos[0], standby_pos[1], standby_pos[2], 180.0)
+#    sys.exit()
     #############
     #############
 
@@ -174,7 +174,7 @@ if __name__=='__main__':
     rospy.sleep(6)
 
     # バナナオーレが見える場所に移動して一言
-    omni_base.go(shelf_pos[0], shelf_pos[1], shelf_pos[2], _MOVE_TIMEOUT)
+    base.go(shelf_pos[0], shelf_pos[1], shelf_pos[2], _MOVE_TIMEOUT)
     tts.say(u'バナナオーレを見つけました。')
     rospy.sleep(2)
 

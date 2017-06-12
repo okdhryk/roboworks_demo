@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     # まずは一言
     rospy.sleep(10.0)
-    tts.say('こんにちはHSRだよ。ペットボトルを掴もうと思います。')
+    tts.say('こんにちはHSRだよ。bananaを掴もうと思います。')
     rospy.sleep(5.0)
 
     try:

@@ -19,6 +19,6 @@ if __name__=='__main__':
 
     # まずは一言
     rospy.sleep(5.0)
-    #tts.say('こんにちはHSRだよ。発話のテストをするよ。')
+#    tts.say('こんにちはHSRだよ。発話のテストをするよ。')
     tts.say('Hello. This is super robot HSR')
     rospy.sleep(5.0)
