@@ -10,7 +10,6 @@ import scipy
 import cv2
 import os
 import csv
-#import paths
 import tf
 import re
 import hsrb_interface
@@ -50,6 +49,23 @@ _EXPLAIN1 = [u'グリッパの間に重さをはかりたいものを持って�
 _EXPLAIN2 = [u'グリッパを閉じます', u'I close my hand now']
 _ANSWER = [u'これは{0}グラムです', u'This is {0} gram']
 
+
+_INITIAL_POS = [u'自己位置を地図上の位置に一致させます。', u'']
+_INITIAL_X = [u'自己位置のエックス座標は{0}ですね', u'initial x is {0}']
+_INITIAL_Y = [u'自己位置のワイ座標は{0}ですね', u'initial y is {0}']
+_INITIAL_ANGLE = [u'自己位置の姿勢は{0}ですね', u'initial theta is {0}']
+
+_STANDBY = [u'イレイサー、準備完了。', u'eraser standby']
+_START = [u'ロボット工房の案内プログラムを起動しました。ドアを開けてください。', u'']
+_OPENDOOR = [u'ドアがあきました。部屋に入ります。', u'']
+_GREETING1 = [u'こんにちは、僕はイレイサーだよ。これからロボット工房を案内するね。', u'Hello, My name is eraser']
+_GREETING2 = [u'みなさん改めてこんにちは。僕は家庭でみなさんの手伝いするために作られたロボットなんだ。飲み物を取ってきたり、床に落ちたゴミを拾ったりできるんだよ。まずは、ここロボット工房の案内をするよ。', u'Hello, My name is eraser']
+_REFRIGERATOR =[u'ここは冷蔵庫だよ。暑い夏には冷たい飲み物が欠かせないよね', u'']
+_BOOKSHELF = [ u'この本棚には学生さんたちの教科書がはいっているよ。学生は勉強が一番だからね。', u'']
+_SHELF1 = [u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあバナバオーレにしよう。僕はバナナオーレが好きなんだ。', u'']
+_SHELF2 = [u'バナナオーレを見つけました。', u'']
+_NG1 = [u'残念、失敗しました。バナナオーレを掴めませんでした。', u'fail to grasp']
+_BY = [u'皆さん、今日はロボット工房まで来てくれてありがとう。またお会いしましょう。質問は岡田先生にしてね', u'Good by']
 
 def compute_difference(pre_data_list, post_data_list):
     if (len(pre_data_list) != len(post_data_list)):
@@ -154,10 +170,11 @@ class Speaker(object):
             sys.exit(1)
 
         # Detect robot's language
-        if os.environ['LANG'] == 'ja_JP.UTF-8':
-            self._lang = Voice.kJapanese
-        else:
-            self._lang = Voice.kEnglish
+        self._lang = Voice.kJapanese
+#        if os.environ['LANG'] == 'ja_JP.UTF-8':
+#            self._lang = Voice.kJapanese
+#        else:
+#            self._lang = Voice.kEnglish
 
     def get_language(self):
         return self._lang
@@ -215,23 +232,24 @@ paper_pos = (2.8, 1.4, 0) # 紙が落ちている場所
 greeting_pos = (1.14, 1.65, 1.57) # 見学者に挨拶する場所
 
 
-def go_and_say(pos=(0,0,0), contents=''):
-    try:
-        base.go(pos[0], pos[1], pos[2], _MOVE_TIMEOUT)
-    except:
-        rospy.logerr('Fail go')
-    tts.say(contents)
-    rospy.sleep(5)
-
-_SENARIO = [
-    (init_greeting_pos, u'みなさん改めてこんにちは。僕は家庭でみなさんの手伝いするために作られたロボットなんだ。飲み物を取ってきたり、床に落ちたゴミを拾ったりできるんだよ。まずは、ここロボット工房の案内をするよ。'),
-    (refrigerator_pos, u'ここは冷蔵庫だよ。暑い夏には冷たい飲み物が欠かせないよね'),
-    (bookshelf_pos, u'この本棚には学生さんたちの教科書がはいっているよ。学生は勉強が一番だからね。')]
-
-
-
 
 if __name__=='__main__':
+    speaker = Speaker()
+
+
+    speaker.speak_sentence(_GREETING1[speaker.get_language()])
+    speaker.speak_sentence(_GREETING2[speaker.get_language()])
+
+    #############
+    #############
+    tts.say(u'ロボット工房の案内を中止します。')
+#    rospy.sleep(3)
+#    base.go(standby_pos[0], standby_pos[1], standby_pos[2], 180.0)
+    sys.exit()
+    #############
+    #############
+
+
     # 初期姿勢に遷移
     try:
         whole_body.move_to_go()
@@ -239,7 +257,7 @@ if __name__=='__main__':
         rospy.logerr('Fail move_to_neutral')
 
     # 自己位置（ドア前）を地図上の位置に一致させる
-    tts.say(u"自己位置を地図上の位置に一致させます。")
+    speaker.speak_sentence(_INITIAL_POS[speaker.get_language()])
     rospy.sleep(2)
 
 #    init_x = rospy.get_param("~init_x", 0.0)
@@ -249,12 +267,9 @@ if __name__=='__main__':
     init_y = standby_pos[1]
     init_angle = standby_pos[2]
 
-    tts.say(u"自己位置のエックス座標は"+str(init_x)+u"ですね")
-    rospy.sleep(3)
-    tts.say(u"自己位置のワイ座標は"+str(init_y)+u"ですね")
-    rospy.sleep(3)
-    tts.say(u"自己位置の姿勢は"+str(init_angle)+u"ですね")
-    rospy.sleep(3)
+    speaker.speak_sentence(_INITIAL_X[speaker.get_language()].format(init_x))
+    speaker.speak_sentence(_INITIAL_Y[speaker.get_language()].format(init_y))
+    speaker.speak_sentence(_INITIAL_ANGLE[speaker.get_language()].format(init_angle))
 
     point = Point(init_x, init_y, 0.0) #x座標とy座標、z座標は無視される
     angle = init_angle #姿勢をラジアンで与える
@@ -274,13 +289,11 @@ if __name__=='__main__':
     p.header.stamp = rospy.Time.now()
     p.header.frame_id="map"
     pub.publish(p);
-    rospy.sleep(15)
-
+    rospy.sleep(5)
 
 
     # ドアの前でスタンバイ
-    tts.say(u'イレイサー、準備完了。')
-    rospy.sleep(2)
+    speaker.speak_sentence(_STANDBY[speaker.get_language()])
 
     # 腕を押したらタスクを開始する
     while True:
@@ -288,47 +301,41 @@ if __name__=='__main__':
         if wrench[0][0] > 20.0:
             break
         pass
-    tts.say(u'ロボット工房の案内プログラムを起動しました。ドアを開けてください。')
-    rospy.sleep(4)
+
+    speaker.speak_sentence(_START[speaker.get_language()])
+
 
     # ドアが開いたら部屋に入る
-
-
-    tts.say(u'ドアがあきました。部屋に入ります。')
-    rospy.sleep(2)
+    speaker.speak_sentence(_OPENDOOR[speaker.get_language()])
 
 
     # 原点に移動
     base.go(zero_pos[0], zero_pos[1], zero_pos[2], 180.0)
- 
+     # まずは一言
+    speaker.speak_sentence(_GREETING1[speaker.get_language()])
 
-    # まずは一言
-    tts.say(u'こんにちは、僕はイレイサーだよ。これからロボット工房を案内するね。')
-    rospy.sleep(3)
+   
+    # Greetings
+    base.go(init_greeting_pos[0], init_greeting_pos[1], init_greeting_pos[2], 180.0)
+    speaker.speak_sentence(_GREETING2[speaker.get_language()])
 
+    # 冷蔵庫
+    base.go(refrigerator_pos[0], refrigerator_pos[1], refrigerator_pos[2], 180.0)
+    speaker.speak_sentence(_REFRIGERATOR[speaker.get_language()])
 
-    #############
-    #############
-#    tts.say(u'ロボット工房の案内を中止します。')
-#    rospy.sleep(3)
-#    base.go(standby_pos[0], standby_pos[1], standby_pos[2], 180.0)
-#    sys.exit()
-    #############
-    #############
+    #本棚
+    base.go(bookshelf_pos[0], bookshelf_pos[1], bookshelf_pos[2], 180.0)
+    speaker.speak_sentence(_BOOKSHELF[speaker.get_language()])
 
-    # 登録地点を順番に案内する
-    for unit in _SENARIO:
-        go_and_say(unit[0], unit[1])
 
     # 食器棚が見える場所に移動して一言
     base.go(shelf_front_pos[0], shelf_front_pos[1], shelf_front_pos[2], 180.0)
-    tts.say(u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあバナバオーレにしよう。僕はバナナオーレが好きなんだ。')
-    rospy.sleep(6)
+    speaker.speak_sentence(_SHELF1[speaker.get_language()])
 
     # バナナオーレが見える場所に移動して一言
     base.go(shelf_pos[0], shelf_pos[1], shelf_pos[2], _MOVE_TIMEOUT)
-    tts.say(u'バナナオーレを見つけました。')
-    rospy.sleep(2)
+    speaker.speak_sentence(_SHELF2[speaker.get_language()])
+
 
     # バナナオーレを掴む
     try:
@@ -347,22 +354,20 @@ if __name__=='__main__':
         # 初期姿勢に遷移
         whole_body.move_to_neutral()
     except:
-        tts.say('残念、失敗しました。バナナオーレを掴めませんでした。')
-        rospy.sleep(3)
+        speaker.speak_sentence(_NG1[speaker.get_language()])
         rospy.logerr('fail to grasp')
 
     # バナナオーレを届ける
     base.go(greeting_pos[0], greeting_pos[1], greeting_pos[2], 180.0)
 
+#    tts.say(u'次に床に落ちた紙を拾うよ。これってとっても難しいんだ。')
+#    rospy.sleep(4)
+#    # 紙が落ちている場所に移動する
+#    base.go(paper_pos[0], paper_pos[1], paper_pos[2], 180.0)
+#    # 紙を吸引する
 
-    tts.say(u'次に床に落ちた紙を拾うよ。これってとっても難しいんだ。')
-    rospy.sleep(4)
-    # 紙が落ちている場所に移動する
-    base.go(paper_pos[0], paper_pos[1], paper_pos[2], 180.0)
-    # 紙を吸引する
-
-    # 見学者の側に移動する
-    base.go(greeting_pos[0], greeting_pos[1], greeting_pos[2], 180.0)
+#    # 見学者の側に移動する
+#    base.go(greeting_pos[0], greeting_pos[1], greeting_pos[2], 180.0)
 
 
     # Start force sensor capture
@@ -384,7 +389,6 @@ if __name__=='__main__':
     pre_force_list = force_sensor_capture.get_current_force()
 
     # Ask user to set object
-    speaker = Speaker()
     speaker.speak_sentence(_EXPLAIN1[speaker.get_language()])
     rospy.sleep(2.0)
 
@@ -408,5 +412,6 @@ if __name__=='__main__':
     speaker.speak_sentence(_ANSWER[speaker.get_language()].format(weight))
 
     # 最後に一言
-    tts.say(u'皆さん、今日はロボット工房まで来てくれてありがとう。またお会いしましょう。質問は岡田先生にしてね')
-    rospy.sleep(5)
+    speaker.speak_sentence(_BY[speaker.get_language()])
+
+
