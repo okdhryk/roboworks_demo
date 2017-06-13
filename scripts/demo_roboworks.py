@@ -59,7 +59,7 @@ _STANDBY = [u'イレイサー、準備完了。', u'eraser standby']
 _START = [u'ロボット工房の案内プログラムを起動しました。ドアを開けてください。', u'']
 _OPENDOOR = [u'ドアがあきました。部屋に入ります。', u'']
 _GREETING1 = [u'こんにちは、僕はイレイサーだよ。これからロボット工房を案内するね。', u'Hello, My name is eraser']
-_GREETING2 = [u'みなさん改めてこんにちは。僕は家庭でみなさんの手伝いするために作られたロボットなんだ。飲み物を取ってきたり、床に落ちたゴミを拾ったりできるんだよ。まずは、ここロボット工房の案内をするよ。', u'Hello, My name is eraser']
+_GREETING2 = [u'みなさん改めてこんにちは。僕は家庭でみなさんの手伝いをするために作られたロボットなんだ。飲み物を取ってきたり、床に落ちたゴミを拾ったりできるんだよ。まずは、ここロボット工房の案内をするよ。', u'Hello, My name is eraser']
 _REFRIGERATOR =[u'ここは冷蔵庫だよ。暑い夏には冷たい飲み物が欠かせないよね', u'']
 _BOOKSHELF = [ u'この本棚には学生さんたちの教科書がはいっているよ。学生は勉強が一番だからね。', u'']
 _SHELF1 = [u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあバナバオーレにしよう。僕はバナナオーレが好きなんだ。', u'']
@@ -238,8 +238,9 @@ if __name__=='__main__':
 
 
     speaker.speak_sentence(_GREETING1[speaker.get_language()])
+    rospy.sleep(2)
     speaker.speak_sentence(_GREETING2[speaker.get_language()])
-
+    rospy.sleep(2)
     #############
     #############
     tts.say(u'ロボット工房の案内を中止します。')
