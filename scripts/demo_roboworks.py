@@ -44,7 +44,7 @@ _CONNECTION_TIMEOUT = 10.0
 
 # Create speak sentences
 # Index 0: in Japanese, 1: in English
-_EXPLAIN1 = [u'グリッパの間に重さをはかりたいものを持ってきてください',
+_EXPLAIN1 = [u'僕はものを掴むだけで重さがわかっちゃうんだ。すごいでしょ。グリッパの間に重さをはかりたいものを持ってきてください',
              u'Please set the object between my gripper']
 _EXPLAIN2 = [u'グリッパを閉じます', u'I close my hand now']
 _ANSWER = [u'これは{0}グラムです', u'This is {0} gram']
@@ -221,14 +221,13 @@ hand_back = geometry.pose(z=-0.5)
 
 
 ### 場所の座標
-# ROSは右手座標系
-standby_pos = (-1.94, 0.0, 0) # 待機場所の座標
+# ROSは右手座標系standby_pos = (-1.94, 0.0, 0) # 待機場所の座標
 zero_pos = (0, 0.0, 0.0) # 原点
 init_greeting_pos = (0.5, 0.0, 1.57) # 見学者に挨拶する場所
 refrigerator_pos = (-0.4, -1.1, -1.57) # 冷蔵庫
 bookshelf_pos = (4.21, -1.35, -1.57) # 本棚の場所
 shelf_front_pos = (1.14, 1.65, 3.14) # 食器棚の見える場所
-shelf_pos = (-0.15, 0.92, 3.14) # 食器棚の場所
+shelf_pos = (-0.3, 0.92, 3.14) # 食器棚の場所
 paper_pos = (2.8, 1.4, 0) # 紙が落ちている場所
 greeting_pos = (1.14, 1.65, 1.57) # 見学者に挨拶する場所
 
