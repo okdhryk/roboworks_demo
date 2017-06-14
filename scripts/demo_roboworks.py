@@ -60,6 +60,7 @@ _START = [u'ロボット工房の案内プログラムを起動しました。�
 _OPENDOOR = [u'ドアがあきました。部屋に入ります。', u'']
 _GREETING1 = [u'こんにちは、僕はイレイサーだよ。これからロボット工房を案内するね。', u'Hello, My name is eraser']
 _GREETING2 = [u'みなさん改めてこんにちは。僕は家庭でみなさんの手伝いをするために作られたロボットなんだ。飲み物を取ってきたり、床に落ちたゴミを拾ったりできるんだよ。まずは、ここロボット工房の案内をするよ。', u'Hello, My name is eraser']
+_GREETING3 = [u'僕はロボカップの世界大会で優勝したこともあるんだ、すごいでしょ。', u'Hello, My name is eraser']
 _REFRIGERATOR =[u'ここは冷蔵庫だよ。暑い夏には冷たい飲み物が欠かせないよね', u'']
 _BOOKSHELF = [ u'この本棚には学生さんたちの教科書がはいっているよ。学生は勉強が一番だからね。', u'']
 _SHELF1 = [u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあバナバオーレにしよう。僕はバナナオーレが好きなんだ。', u'']
@@ -236,17 +237,11 @@ greeting_pos = (1.14, 1.65, 1.57) # 見学者に挨拶する場所
 if __name__=='__main__':
     speaker = Speaker()
 
-
-    speaker.speak_sentence(_GREETING1[speaker.get_language()])
-    rospy.sleep(2)
-    speaker.speak_sentence(_GREETING2[speaker.get_language()])
-    rospy.sleep(2)
     #############
-    #############
-    tts.say(u'ロボット工房の案内を中止します。')
+#     tts.say(u'ロボット工房の案内を中止します。')
 #    rospy.sleep(3)
 #    base.go(standby_pos[0], standby_pos[1], standby_pos[2], 180.0)
-    sys.exit()
+#    sys.exit()
     #############
     #############
 
@@ -290,7 +285,7 @@ if __name__=='__main__':
     p.header.stamp = rospy.Time.now()
     p.header.frame_id="map"
     pub.publish(p);
-    rospy.sleep(5)
+    rospy.sleep(3)
 
 
     # ドアの前でスタンバイ
@@ -304,14 +299,14 @@ if __name__=='__main__':
         pass
 
     speaker.speak_sentence(_START[speaker.get_language()])
-
+    rospy.sleep(2)
 
     # ドアが開いたら部屋に入る
     speaker.speak_sentence(_OPENDOOR[speaker.get_language()])
 
 
     # 原点に移動
-    base.go(zero_pos[0], zero_pos[1], zero_pos[2], 180.0)
+    base.go(zero_pos[0], zero_pos[1], zero_pos[2], 240.0)
      # まずは一言
     speaker.speak_sentence(_GREETING1[speaker.get_language()])
 
@@ -319,6 +314,7 @@ if __name__=='__main__':
     # Greetings
     base.go(init_greeting_pos[0], init_greeting_pos[1], init_greeting_pos[2], 180.0)
     speaker.speak_sentence(_GREETING2[speaker.get_language()])
+    speaker.speak_sentence(_GREETING3[speaker.get_language()])
 
     # 冷蔵庫
     base.go(refrigerator_pos[0], refrigerator_pos[1], refrigerator_pos[2], 180.0)
