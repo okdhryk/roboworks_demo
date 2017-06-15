@@ -335,6 +335,14 @@ if __name__=='__main__':
 
     # バナナオーレを掴む
     try:
+        gripper.command(1.0)
+        whole_body.move_to_go()
+    except:
+        tts.say('初期化に失敗')
+        rospy.logerr('fail to init')
+        sys.exit()
+
+    try:
         # 把持用初期姿勢に遷移
         whole_body.move_to_neutral()
         # ペットボトルの手前に手を持ってくる
