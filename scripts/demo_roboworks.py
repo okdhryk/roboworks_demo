@@ -63,9 +63,10 @@ _GREETING2 = [u'みなさん改めてこんにちは。僕は家庭でみなさ�
 _GREETING3 = [u'僕はロボカップの世界大会で優勝したこともあるんだ、すごいでしょ。', u'Hello, My name is eraser']
 _REFRIGERATOR =[u'ここは冷蔵庫だよ。暑い夏には冷たい飲み物が欠かせないよね', u'']
 _BOOKSHELF = [ u'この本棚には学生さんたちの教科書がはいっているよ。学生は勉強が一番だからね。', u'']
-_SHELF1 = [u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあバナバオーレにしよう。僕はバナナオーレが好きなんだ。', u'']
-_SHELF2 = [u'バナナオーレを見つけました。', u'']
-_NG1 = [u'残念、失敗しました。バナナオーレを掴めませんでした。', u'fail to grasp']
+_SHELF1 = [u'さて、これから僕のすごいところを見せちゃうよ。棚にある飲み物を取って、届けるよ。何がいいかなぁ、じゃあプリングルスにしよう。僕はプリングルスが好きなんだ。', u'']
+_SHELF2 = [u'プリングルスを見つけました。', u'']
+_NG1 = [u'残念、失敗しました。掴めませんでした。', u'fail to grasp']
+_BY0 = [u'受け取ってください', u'Good by']
 _BY = [u'皆さん、今日はロボット工房まで来てくれてありがとう。またお会いしましょう。質問は岡田先生にしてね', u'Good by']
 
 def compute_difference(pre_data_list, post_data_list):
@@ -197,7 +198,7 @@ _MOVE_TIMEOUT=60.0
 # 把持トルク[Nm]
 _GRASP_TORQUE=-0.01
 # ボトルのtf名
-_BOTTLE_TF='ar_marker/1'
+_BOTTLE_TF='ar_marker/8'
 # グリッパのtf名
 _HAND_TF='hand_palm_link'
 
@@ -221,7 +222,8 @@ hand_back = geometry.pose(z=-0.5)
 
 
 ### 場所の座標
-# ROSは右手座標系standby_pos = (-1.94, 0.0, 0) # 待機場所の座標
+# ROSは右手座標系
+standby_pos = (-1.94, 0.0, 0) # 待機場所の座標
 zero_pos = (0, 0.0, 0.0) # 原点
 init_greeting_pos = (0.5, 0.0, 1.57) # 見学者に挨拶する場所
 refrigerator_pos = (-0.4, -1.1, -1.57) # 冷蔵庫
@@ -332,6 +334,7 @@ if __name__=='__main__':
     base.go(shelf_pos[0], shelf_pos[1], shelf_pos[2], _MOVE_TIMEOUT)
     speaker.speak_sentence(_SHELF2[speaker.get_language()])
 
+    rospy.sleep(2)
 
     # バナナオーレを掴む
     try:
@@ -363,7 +366,9 @@ if __name__=='__main__':
 
     # バナナオーレを届ける
     base.go(greeting_pos[0], greeting_pos[1], greeting_pos[2], 180.0)
+    speaker.speak_sentence(_BY0[speaker.get_language()])
 
+    rospy.sleep(5)
 #    tts.say(u'次に床に落ちた紙を拾うよ。これってとっても難しいんだ。')
 #    rospy.sleep(4)
 #    # 紙が落ちている場所に移動する
